@@ -38,13 +38,13 @@ MACROS = ('GU_BOARD_ID', 'GU_BOARD_SUBSYSTEM', 'GU_CHIP_ID', 'GU_DEVICE_MEMORY_S
           'GU_NVGOP_TEXT_BYTES', 'GU_NVGOP_TEXT_SHA256')
 
 
-def profile_values():
-    """Expand each pinned macro of the draft profile through the real headers."""
+def profile_values(profile=PROFILE):
+    """Expand each pinned macro of a fixed profile through the real headers."""
     names = (*MACROS, 'GU_CONSOLE_MULTI_CHILD')
     # Keys are indexes so the preprocessor cannot expand them.
     source = '#include "machine-profile.h"\n' + ''.join(f'@{i}@ {m}\n' for i, m in enumerate(MACROS))
     source += f'#ifdef GU_CONSOLE_MULTI_CHILD\n@{len(MACROS)}@ 1\n#else\n@{len(MACROS)}@ 0\n#endif\n'
-    done = subprocess.run([CLANG, '-E', '-P', '-x', 'c', '-', '-I', str(ROOT), *PROFILE],
+    done = subprocess.run([CLANG, '-E', '-P', '-x', 'c', '-', '-I', str(ROOT), *profile],
                           input=source, capture_output=True, text=True)
     if done.returncode:
         raise AssertionError(done.stderr)
@@ -54,6 +54,8 @@ def profile_values():
         if not row:
             continue
         name, text = names[int(row[1])], row[2].strip()
+        if text == name:  # not defined for this profile (e.g. no combo on a non-aggregate console)
+            continue
         if text.startswith('"'):
             values[name] = text.strip('"')
         elif ',' in text:
@@ -87,6 +89,32 @@ def rtx_gop_paths(lines):
 
 def driver_records(lines, key):
     return [b for b in mp.parse_bindings(lines) if b['file'] == key]
+
+
+class ExactEligibilityTests(unittest.TestCase):
+    """Negative admission without the capture: the pins cannot be widened or overridden."""
+
+    def test_pinned_identity_cannot_be_overridden(self):
+        # Each override is a value another reviewed machine or card actually has.
+        for define in ('GU_BOARD_ID=0x248710deU', 'GU_BOARD_SUBSYSTEM=0x40961458U',
+                       'GU_CHIP_ID=0xb74000a1U', 'GU_DEVICE_MEMORY_SIZE=0x2000U',
+                       'GU_BAR0_BASE=0x42000000ULL', 'GU_PROM_SHA256="00"', 'GU_FIRMWARE_PROFILE=4',
+                       'GU_TARGET_BUS=2', 'GU_TARGET_SEGMENT=1', 'GU_ROOT_PORT_DEVICE=2',
+                       'GU_RTX_PATH_BYTES=0', 'GU_PROFILE_NAME="X"'):
+            with self.subTest(define=define):
+                done = subprocess.run([CLANG, '-std=c11', '-Wall', '-Wextra', '-Werror', '-fsyntax-only',
+                                       '-x', 'c', '-', '-I', str(ROOT), *PROFILE, '-D' + define],
+                                      input='#include "machine-profile.h"\n', capture_output=True, text=True)
+                self.assertNotEqual(done.returncode, 0, define)
+
+    def test_same_chip_as_h610m_but_a_different_exact_machine(self):
+        ours, h610m = profile_values(), profile_values(['-DGU_PROFILE_H610M_3060'])
+        for same in ('GU_BOARD_ID', 'GU_CHIP_ID', 'GU_DEVICE_MEMORY_SIZE'):
+            self.assertEqual(ours[same], h610m[same], same)
+        for differs in ('GU_BOARD_SUBSYSTEM', 'GU_BAR0_BASE', 'GU_PROM_SHA256',
+                        'GU_CONSOLE_AGGREGATE', 'GU_EDID_TEXT_SHA256'):
+            self.assertNotEqual(ours[differs], h610m[differs], differs)
+        self.assertEqual(ours['GU_BOARD_SUBSYSTEM'], 0x263019da)
 
 
 @unittest.skipUnless((CAPTURE / 'DIAG00.TXT').is_file(), f'capture not found at {CAPTURE}')
