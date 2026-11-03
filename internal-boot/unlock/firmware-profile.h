@@ -77,8 +77,9 @@
 #define GU_EDID_TEXT_SHA256 "49fe68461765963d0b63144b0a7863f3b2db5926f1c988cbacc1e85ebe2b96f4"
 
 #elif GU_FIRMWARE_PROFILE == GU_FIRMWARE_AMI_B760MK_1663
-/* Unreviewed. ASUS PRIME B760M-K BIOS 1663, three identical iGPU-off
- * captures. Compared with the drivers extracted from ASUS's own
+/* Not yet maintainer-reviewed. ASUS PRIME B760M-K BIOS 1663, three identical
+ * iGPU-off captures. Hardware result and tested revision: GU_PROFILE_B760MK_3060
+ * in machine-profile.h. Compared with the drivers extracted from ASUS's own
  * TUF-GAMING-B660M-E-D4-ASUS-4003.CAP (sizes there match B660M_4003 below);
  * the 1663 .CAP extraction matches the captured loaded .text byte-for-byte.
  * EDID: every section identical. nvgop: .text hash identical.

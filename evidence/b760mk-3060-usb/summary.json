@@ -1,6 +1,6 @@
 {
   "profile": "b760mk-3060",
-  "source_revision": "pre-rebase revision of this PR branch (on main 38b3629)",
+  "source_revision": "ddb09665bcfe164cd6c0f6d7ea089bbe3ba0e4dd (tag b760mk-3060-hw-tested on shahidx0x/Windows-GPU-UNLOCK; pre-rebase PR branch on main 38b3629)",
   "evidence_source": "contributor-reported; original build only",
   "integrated_build_hardware_tested": false,
   "hardware": {
@@ -28,7 +28,7 @@
   "efi": {
     "child_sha256": "1a4ad8c36df6ac84471475eac4f260bc5ed27ccccadab78fbc928e0d628c5f13",
     "wrapper_sha256": "07561613b6c6a6f7665f51082924ff012f96b4a44b10e49c82e0f6c0bab91bc9",
-    "reproducible": "Built with research/headless/build-usb.ps1 -HardwareProfile b760mk-3060 before this branch was rebased; this is not a current-main hash claim. The wrapper embeds the builder's Windows ESP GUID."
+    "reproducible": "Rebuilding ddb0966 with research/headless/build-usb.ps1 -HardwareProfile b760mk-3060 reproduces both hashes byte-identically (checked 2026-11-03); this is not a current-main hash claim. The wrapper embeds the builder's Windows ESP GUID."
   },
   "probe": {
     "captures": 3,

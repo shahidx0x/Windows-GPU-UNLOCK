@@ -4,9 +4,12 @@
 
 These results come from one machine and were reported by the contributor on 2026-10-28/29. The
 maintainer has not run a hardware test for them. The EFI hashes in [summary.json](summary.json)
-are the files that were booted, built with
-`research/headless/build-usb.ps1 -HardwareProfile b760mk-3060` from this PR's branch before it
-was rebased onto main. The wrapper embeds the builder's Windows ESP GUID, so its hash differs on
+are the files that were booted. They were built with
+`research/headless/build-usb.ps1 -HardwareProfile b760mk-3060` from commit
+`ddb09665bcfe164cd6c0f6d7ea089bbe3ba0e4dd`, tag [`b760mk-3060-hw-tested`](https://github.com/shahidx0x/Windows-GPU-UNLOCK/tree/b760mk-3060-hw-tested)
+on the contributor's fork. That is this PR's branch before it was rebased onto main, based on
+main `38b3629`. Rebuilding that commit reproduces both hashes byte for byte. Later rebased builds
+have host tests only. The wrapper embeds the builder's Windows ESP GUID, so its hash differs on
 other machines.
 
 Hardware: ASUS PRIME B760M-K (BIOS 1663), Core i5-13500 (iGPU disabled), Zotac RTX 3060 12 GiB

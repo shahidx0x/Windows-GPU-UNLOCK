@@ -128,20 +128,22 @@
 
 #elif defined(GU_PROFILE_B760MK_3060)
 
-/* Unreviewed, no hardware result yet. ASUS PRIME B760M-K BIOS 1663, Intel
+/* Not yet maintainer-reviewed. Contributor-reported hardware result: two clean
+ * cold-boot USB transactions (2026-10-28/29, evidence/b760mk-3060-usb), with the
+ * EFI built from tag b760mk-3060-hw-tested (ddb0966, before the rebase onto
+ * main). Later builds are host-tested only. ASUS PRIME B760M-K BIOS 1663, Intel
  * iGPU disabled (Primary Display PEG), Zotac RTX 3060 12GB (GA106, 19da:2630,
  * VBIOS 94.06.2f.40.e3). Aggregate console like B660M_3070TI: the AMI combo
  * splitter owns the console on one nvgop child (single-child, one monitor).
- * GA106 has never run the aggregate release path on hardware. Values come
- * from three identical read-only cold captures (2026-10-28, iGPU off; BIOS
- * Fast Boot changed between the first and second without effect).
- * tests/test_b760mk_draft_capture.py checks every pinned value against a
+ * Values come from three identical read-only cold captures (2026-10-28, iGPU
+ * off; BIOS Fast Boot changed between the first and second without effect).
+ * tests/test_b760mk_capture.py checks every pinned value against a
  * capture: memory is MMIO 0x1183a4 (0x3000), BAR0_END is the 16 MiB window
  * rule. Windows assigns 0x84000000-0x850fffff: BAR0 plus the expansion ROM
  * BAR at 0x85000000 (config dword 12). boot/test-aggregate-graph-b760mk.ps1
  * replays the release planning against each capture's full graph.
  * With the iGPU enabled the firmware adds an iGPU GOP (3 GOPs) and writes no
- * ConOut; this draft does not cover that. */
+ * ConOut; this profile does not cover that. */
 #define GU_PROFILE_NAME "ASUS-PRIME-B760M-K-1663-RTX3060-12GB"
 #define GU_BOARD_ID 0x250410deU
 #define GU_BOARD_SUBSYSTEM 0x263019daU

@@ -212,7 +212,8 @@ Build with `research/headless/build-usb.ps1 -HardwareProfile b760mk-3060`. Only 
 The contributor reports two clean transactions from full shutdowns, each with direct Windows
 entry and the display restored. Repository cuBLAS n=4096 medians (locked → unlocked) were:
 FP16 25.60 → 47.34, BF16 25.54 → 48.32, TF32 12.92 → 24.85 and FP32 8.04 → 8.06 TFLOPS.
-These reports and hashes identify the pre-rebase build of the PR. They are not a physical test
+These reports and hashes identify commit `ddb0966` (tag `b760mk-3060-hw-tested` on the
+contributor's fork), the pre-rebase build of the PR. They are not a physical test
 of a later main build. [Evidence and limits](../evidence/b760mk-3060-usb/README.md).
 
 ## Reported local-profile success
